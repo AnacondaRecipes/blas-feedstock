@@ -55,7 +55,7 @@ outputs:
       string: "{{ build_num }}_{{ blas_impl }}"
       run_exports:
         - {{ pin_subpackage("libblas", max_pin="x") }}
-      track_features:
+#      track_features:
        - blas_{{ blas_impl }}  # [blas_impl != blas_default_impl]
     requirements:
       host:
