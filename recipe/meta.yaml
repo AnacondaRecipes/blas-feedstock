@@ -10,11 +10,12 @@ source:
     sha256: 80de7c6e83d1d84d016b4cb299f2c15f5a82b9d36865dd5c16bf221fe9a303ad
     url: https://github.com/isuruf/vecLibFort/archive/99af8640e98c829b41c3235e3706760cd5696fe4.tar.gz
 build:
+  noarch: python
   number: 16
   run_exports:
     - liblapack >=3.9.0,<3.10.0a0
   string: 16_osx64_openblas
-  track_features: null
+#  track_features: null
 requirements:
   host:
     - libblas 3.9.0 16_osx64_openblas
