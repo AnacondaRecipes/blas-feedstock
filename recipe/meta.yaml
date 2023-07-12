@@ -270,4 +270,4 @@ extra:
     ref:  https://anaconda.zendesk.com/agent/tickets/35116
     reason: "needed for r-zoib build"
     recipe-maintainers:
-      - bkreider
+      - ianaobi
