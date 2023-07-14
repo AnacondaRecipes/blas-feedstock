@@ -1,6 +1,6 @@
 {% set version = "3.9.0" %}
 # if build_num is reset to 0 (for new version), update increment for blas_minor below
-{% set build_num = 14 %}
+{% set build_num = 12 %}
 {% set version_major = version.split(".")[0] %}
 # blas_major denotes major infrastructural change to how blas is managed
 {% set blas_major = "2" %}
@@ -15,17 +15,13 @@ package:
   version: "{{ version }}"
 
 source:
-  - url: https://github.com/Reference-LAPACK/lapack/archive/v{{ version }}.tar.gz
-    sha256: 106087f1bb5f46afdfba7f569d0cbe23dacb9a07cd24733765a0e89dbe1ad573
-    patches:
-      # Test BLAS and LAPACKE in addition to LAPACK
-      - patches/0001-Test-BLAS-and-LAPACKE-in-addition-to-LAPACK.patch
-      # Only the test-suite is compiled here, and we therefore do not need to
-      # carry all the patches that the lapack-feedstock has (see comment below)
-
-  - url: https://github.com/isuruf/vecLibFort/archive/99af8640e98c829b41c3235e3706760cd5696fe4.tar.gz
-    sha256: 80de7c6e83d1d84d016b4cb299f2c15f5a82b9d36865dd5c16bf221fe9a303ad
-    folder: vecLibFort
+  url: https://github.com/Reference-LAPACK/lapack/archive/v{{ version }}.tar.gz
+  sha256: 106087f1bb5f46afdfba7f569d0cbe23dacb9a07cd24733765a0e89dbe1ad573
+  patches:
+    # Test BLAS and LAPACKE in addition to LAPACK
+    - patches/0001-Test-BLAS-and-LAPACKE-in-addition-to-LAPACK.patch
+    # Only the test-suite is compiled here, and we therefore do not need to
+    # carry all the patches that the lapack-feedstock has (see comment below)
 
 build:
   number: "{{ build_num }}"
@@ -64,13 +60,11 @@ outputs:
       track_features:
        - blas_{{ blas_impl }}  # [blas_impl != blas_default_impl]
     requirements:
-      build:
-        - {{ compiler('fortran') }}   # [blas_impl == 'accelerate']
       host:
-        - libopenblas 0.3.20   # [blas_impl == 'openblas']
+        - libopenblas 0.3.18   # [blas_impl == 'openblas']
         # from https://github.com/conda-forge/intel_repack-feedstock/
-        - mkl 2022.0           # [blas_impl == 'mkl']
-        - blis 0.9.0           # [blas_impl == 'blis']
+        - mkl 2021.4           # [blas_impl == 'mkl']
+        - blis 0.8.1           # [blas_impl == 'blis']
       run:
         - {{ pin_compatible("libopenblas", max_pin="x.x.x", exact=win) }}  # [blas_impl == 'openblas']
         - {{ pin_compatible("mkl", max_pin="x", exact=win) }}              # [blas_impl == 'mkl']
@@ -86,9 +80,6 @@ outputs:
       - lib/libblas.so.{{ version_major }}      # [linux]
       - lib/libblas.{{ version_major }}.dylib   # [osx]
       - Library/bin/libblas.dll                 # [win]
-      - lib/libvecLibFort-ng.dylib              # [blas_impl == 'accelerate']
-      - lib/liblapack-netlib.*.dylib            # [blas_impl == 'accelerate']
-      - lib/liblapacke-netlib.*.dylib           # [blas_impl == 'accelerate']
     test:
       commands:
         # Following line is just to help conda-build's used variables detection
@@ -198,11 +189,11 @@ outputs:
       string: "{{ build_num }}_{{ build_string_platform }}_{{ blas_impl }}"
     requirements:
       host:
-        - openblas   0.3.20  # [blas_impl == "openblas"]
-        - mkl-devel  2022.0  # [blas_impl == "mkl"]
+        - openblas   # [blas_impl == "openblas"]
+        - mkl-devel  # [blas_impl == "mkl"]
       run:
-        - openblas   0.3.20  # [blas_impl == "openblas"]
-        - mkl-devel  2022.0  # [blas_impl == "mkl"]
+        - openblas   # [blas_impl == "openblas"]
+        - mkl-devel  # [blas_impl == "mkl"]
         - {{ pin_subpackage("liblapack", exact=True) }}      # [blas_impl != 'blis']
         - {{ pin_subpackage("liblapacke", exact=True) }}     # [blas_impl != 'blis']
         - liblapack  {{ version }} *netlib                   # [blas_impl == 'blis']
@@ -243,7 +234,7 @@ outputs:
         - {{ pin_subpackage("libcblas", exact=True) }}
         - {{ pin_subpackage("libblas", exact=True) }}
       {% else %}
-        - blis 0.9.0
+        - blis 0.8.1
       {% endif %}
       run:
         - {{ pin_subpackage("liblapack", exact=True) }}      # [blas_impl != 'blis']
@@ -276,8 +267,3 @@ extra:
     - isuruf
     - ocefpaf
     - h-vetinari
-  anaconda-services:
-  ref:  https://anaconda.zendesk.com/agent/tickets/35116
-  reason: "needed for r-devtools"
-  recipe-maintainers:
-    - bkreider
