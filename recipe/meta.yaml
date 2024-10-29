@@ -261,6 +261,11 @@ about:
   summary: Metapackage to select the BLAS variant. Use conda's pinning mechanism in your environment to control which variant you want.
 
 extra:
+  anaconda-services:
+    ref: https://anaconda.zendesk.com/agent/tickets/56871
+    reason: Dependency for cvxopt
+  recipe-maintainers:
+    - ianaobi
   recipe-maintainers:
     - jakirkham
     - pelson
