@@ -266,7 +266,6 @@ extra:
     reason: Dependency for cvxopt
   recipe-maintainers:
     - ianaobi
-    - bkreider
   recipe-maintainers:
     - jakirkham
     - pelson
