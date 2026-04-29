@@ -8,8 +8,3 @@ upstream_sources:
       to_pattern: \1
     packages:
       - blas
-      - blas-devel
-      - libblas
-      - libcblas
-      - liblapack
-      - liblapacke
